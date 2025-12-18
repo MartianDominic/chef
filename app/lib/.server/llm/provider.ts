@@ -78,10 +78,17 @@ export function getProvider(
       let google;
       if (userApiKey) {
         google = createGoogleGenerativeAI({
-          apiKey: userApiKey || getEnv('GOOGLE_API_KEY'),
-          fetch: userApiKey ? userKeyApiFetch('Google') : fetch,
+          apiKey: userApiKey,
+          fetch: userKeyApiFetch('Google'),
         });
-      } else {
+      } else if (getEnv('GOOGLE_API_KEY')) {
+        // Use Google AI API with API key
+        google = createGoogleGenerativeAI({
+          apiKey: getEnv('GOOGLE_API_KEY'),
+          fetch,
+        });
+      } else if (getEnv('GOOGLE_VERTEX_CREDENTIALS_JSON')) {
+        // Use Google Vertex AI with service account credentials
         const credentials = JSON.parse(getEnv('GOOGLE_VERTEX_CREDENTIALS_JSON')!);
         google = createVertex({
           project: credentials.project_id,
@@ -97,6 +104,8 @@ export function getProvider(
           },
           fetch,
         });
+      } else {
+        throw new Error('No Google API key or Vertex credentials configured. Set GOOGLE_API_KEY or GOOGLE_VERTEX_CREDENTIALS_JSON.');
       }
       provider = {
         model: google(model),

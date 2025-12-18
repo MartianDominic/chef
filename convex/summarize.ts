@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { internalAction, internalMutation } from "./_generated/server";
-import { OpenAI } from "openai";
 import { internal } from "./_generated/api";
 
 const SUMMARIZE_SYSTEM_PROMPT = `You are a helpful assistant that given a users' prompt, summarizes it into 5 words
@@ -22,26 +21,40 @@ export const firstMessage = internalAction({
   args: { chatMessageId: v.id("chatMessagesStorageState"), message: v.string() },
   handler: async (ctx, args) => {
     const { chatMessageId, message } = args;
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-    const response = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        {
-          role: "system",
-          content: SUMMARIZE_SYSTEM_PROMPT,
-        },
-        { role: "user", content: message },
-      ],
-    });
-    if (!response.choices[0].message.content) {
-      throw new Error("Failed to summarize message");
+
+    // Skip summarization if Google API key is not configured
+    if (!process.env.GOOGLE_API_KEY) {
+      console.log("Skipping summarization: GOOGLE_API_KEY not set");
+      return;
     }
-    const summary = response.choices[0].message.content;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SUMMARIZE_SYSTEM_PROMPT }] },
+          contents: [{ parts: [{ text: message }] }],
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Failed to summarize message:", await response.text());
+      return;
+    }
+
+    const data = await response.json();
+    const summary = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!summary) {
+      console.error("Failed to extract summary from response");
+      return;
+    }
+
     await ctx.runMutation(internal.summarize.saveMessageSummary, {
       chatMessageId,
-      summary,
+      summary: summary.trim(),
     });
   },
 });

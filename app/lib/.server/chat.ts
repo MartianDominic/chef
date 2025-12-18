@@ -89,7 +89,9 @@ export async function chatAction({ request }: ActionFunctionArgs) {
     (body.modelChoice &&
       body.modelChoice !== 'claude-sonnet-4-0' &&
       body.modelChoice !== 'gpt-5' &&
-      body.modelChoice !== 'claude-sonnet-4-5')
+      body.modelChoice !== 'claude-sonnet-4-5' &&
+      body.modelChoice !== 'gemini-3-pro-preview' &&
+      body.modelChoice !== 'gemini-3-flash-preview')
   ) {
     useUserApiKey = true;
   }
@@ -180,7 +182,9 @@ export async function chatAction({ request }: ActionFunctionArgs) {
         userApiKey ||
         body.modelChoice === 'claude-sonnet-4-0' ||
         body.modelChoice === 'gpt-5' ||
-        body.modelChoice === 'claude-sonnet-4-5'
+        body.modelChoice === 'claude-sonnet-4-5' ||
+        body.modelChoice === 'gemini-3-pro-preview' ||
+        body.modelChoice === 'gemini-3-flash-preview'
           ? body.modelChoice
           : undefined,
       userApiKey,

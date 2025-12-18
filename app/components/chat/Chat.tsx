@@ -204,6 +204,8 @@ export const Chat = memo(
           'gpt-5': { providerName: 'openai', apiKeyField: 'openai' },
           'grok-3-mini': { providerName: 'xai', apiKeyField: 'xai' },
           'gemini-2.5-pro': { providerName: 'google', apiKeyField: 'google' },
+          'gemini-3-pro-preview': { providerName: 'google', apiKeyField: 'google' },
+          'gemini-3-flash-preview': { providerName: 'google', apiKeyField: 'google' },
           'claude-3-5-haiku': { providerName: 'anthropic', apiKeyField: 'value' },
           'gpt-4.1-mini': { providerName: 'openai', apiKeyField: 'openai' },
         };
@@ -314,6 +316,12 @@ export const Chat = memo(
           modelProvider = 'XAI';
         } else if (modelSelection === 'gemini-2.5-pro') {
           modelProvider = 'Google';
+        } else if (modelSelection === 'gemini-3-pro-preview') {
+          modelProvider = 'Google';
+          modelChoice = 'gemini-3-pro-preview';
+        } else if (modelSelection === 'gemini-3-flash-preview') {
+          modelProvider = 'Google';
+          modelChoice = 'gemini-3-flash-preview';
         } else if (modelSelection === 'gpt-4.1-mini') {
           modelProvider = 'OpenAI';
           modelChoice = 'gpt-4.1-mini';
