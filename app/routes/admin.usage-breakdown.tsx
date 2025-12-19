@@ -10,7 +10,7 @@ import { UsageBreakdownView } from '~/components/debug/UsageBreakdownView';
 import { getConvexSiteUrl } from '~/lib/convexSiteUrl';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Prompt Debug | Chef Admin' }];
+  return [{ title: 'Usage Breakdown | Tevero Admin' }];
 };
 
 export default function PromptDebug() {

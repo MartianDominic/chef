@@ -8,7 +8,7 @@ import { useSearchParams } from '@remix-run/react';
 import { useIsAdmin } from '~/lib/hooks/useDebugPrompt';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Prompt Debug | Chef Admin' }];
+  return [{ title: 'Prompt Debug | Tevero Admin' }];
 };
 
 export default function PromptDebug() {

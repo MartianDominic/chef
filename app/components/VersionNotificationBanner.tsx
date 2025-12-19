@@ -19,7 +19,7 @@ export default function useVersionNotificationBanner() {
   if (!error && data?.sha && currentSha && data.sha !== currentSha) {
     toast.info(
       <div className="flex flex-col">
-        A new version of Chef is available! Refresh this page to update.
+        A new version of Tevero is available! Refresh this page to update.
         <Button
           className="ml-auto w-fit items-center"
           inline

@@ -45,13 +45,13 @@ export function CompatibilityWarnings({ setEnabled }: { setEnabled: (enabled: bo
   if (experience === 'mobile-warning') {
     return (
       <>
-        <div className="my-2 text-balance rounded border border-neutral-1 bg-[#F7F3F1] p-4 text-center dark:border-neutral-10 dark:bg-neutral-11">
+        <div className="my-2 text-balance rounded border border-[var(--cvx-border-transparent)] bg-[var(--cvx-background-secondary)] p-4 text-center">
           {isDebug && (
             <div className="absolute left-4 top-4 z-50">
               <select
                 value={experience}
                 onChange={(e) => setSelectedExperience(e.target.value as Experience)}
-                className="rounded border bg-white px-2 py-1"
+                className="rounded border border-[var(--cvx-border-transparent)] bg-[var(--cvx-background-secondary)] px-2 py-1 text-[var(--cvx-content-primary)]"
               >
                 <option value="marketing-page-only-for-mobile">marketing-page-only-for-mobile</option>
                 <option value="marketing-page-only-for-desktop">marketing-page-only-for-desktop</option>
@@ -66,7 +66,7 @@ export function CompatibilityWarnings({ setEnabled }: { setEnabled: (enabled: bo
             <div>
               <h3>Grab your laptop!</h3>
               <p className="my-2">
-                Chef uses{' '}
+                Tevero uses{' '}
                 <a
                   href="https://webcontainers.io/guides/browser-support#web-platform-requirements"
                   className="text-bolt-elements-messages-linkColor hover:underline"
@@ -101,14 +101,14 @@ export function CompatibilityWarnings({ setEnabled }: { setEnabled: (enabled: bo
   }
 
   return (
-    <div className="my-2 text-balance rounded border border-neutral-1 bg-[#F7F3F1] p-4 text-center dark:border-neutral-10 dark:bg-neutral-11">
+    <div className="my-2 text-balance rounded border border-[var(--cvx-border-transparent)] bg-[var(--cvx-background-secondary)] p-4 text-center">
       <div>
         {isDebug && (
           <div className="absolute left-4 top-4 z-50">
             <select
               value={experience}
               onChange={(e) => setSelectedExperience(e.target.value as Experience)}
-              className="rounded border bg-white px-2 py-1"
+              className="rounded border border-[var(--cvx-border-transparent)] bg-[var(--cvx-background-secondary)] px-2 py-1 text-[var(--cvx-content-primary)]"
             >
               <option value="marketing-page-only-for-mobile">marketing-page-only-for-mobile</option>
               <option value="marketing-page-only-for-desktop">marketing-page-only-for-desktop</option>
@@ -124,13 +124,13 @@ export function CompatibilityWarnings({ setEnabled }: { setEnabled: (enabled: bo
             {experience === 'marketing-page-only-for-mobile' ? (
               <>
                 <h3 className="text-xl font-bold">Grab your laptop!</h3>
-                <p className="my-2">Chef supports desktop Firefox, Chrome, and some other Chromium-based browsers.</p>
+                <p className="my-2">Tevero supports desktop Firefox, Chrome, and some other Chromium-based browsers.</p>
               </>
             ) : experience === 'marketing-page-only-for-desktop-safari' ? (
               <>
-                <h3 className="text-xl font-bold">You’re a few keystrokes away from cooking with Chef!</h3>
+                <h3 className="text-xl font-bold">You're a few keystrokes away from building with Tevero!</h3>
                 <p className="my-2">
-                  Chef uses{' '}
+                  Tevero uses{' '}
                   <a
                     href="https://webcontainers.io/guides/browser-support#web-platform-requirements"
                     className="text-bolt-elements-messages-linkColor hover:underline"
@@ -142,9 +142,9 @@ export function CompatibilityWarnings({ setEnabled }: { setEnabled: (enabled: bo
               </>
             ) : (
               <>
-                <h3 className="text-xl font-bold">You’re a few keystrokes away from cooking with Chef!</h3>
+                <h3 className="text-xl font-bold">You're a few keystrokes away from building with Tevero!</h3>
                 <p className="my-2">
-                  Chef uses{' '}
+                  Tevero uses{' '}
                   <a
                     href="https://webcontainers.io/guides/browser-support#web-platform-requirements"
                     className="text-bolt-elements-messages-linkColor hover:underline"

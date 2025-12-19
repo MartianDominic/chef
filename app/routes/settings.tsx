@@ -6,7 +6,7 @@ import { SettingsContent } from '~/components/SettingsContent.client';
 import { ClientOnly } from 'remix-utils/client-only';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Settings | Chef' }];
+  return [{ title: 'Settings | Tevero' }];
 };
 
 export const loader = async (args: LoaderFunctionArgs) => {

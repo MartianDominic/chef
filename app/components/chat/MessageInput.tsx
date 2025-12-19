@@ -49,13 +49,13 @@ type Highlight = {
 const HIGHLIGHTS: Highlight[] = [
   {
     text: 'ai chat',
-    tooltip: 'Unless otherwise configured, Chef will prototype with GPT‑4o mini or GPT‑4.1 nano (limits apply).',
+    tooltip: 'Unless otherwise configured, Tevero will prototype with GPT‑4o mini or GPT‑4.1 nano (limits apply).',
   },
   {
     text: 'collaborative text editor',
     tooltip: (
       <>
-        Chef will use the{' '}
+        Tevero will use the{' '}
         <TooltipLink href="https://www.convex.dev/components/prosemirror-sync">Collaborative Text Editor</TooltipLink>{' '}
         Convex <TooltipLink href="https://www.convex.dev/components">component</TooltipLink>.
       </>
@@ -65,7 +65,7 @@ const HIGHLIGHTS: Highlight[] = [
     text: 'upload',
     tooltip: (
       <>
-        Chef will use Convex’s built-in{' '}
+        Tevero will use Convex's built-in{' '}
         <TooltipLink href="https://docs.convex.dev/file-storage">file upload capabilities</TooltipLink>.
       </>
     ),
@@ -74,7 +74,7 @@ const HIGHLIGHTS: Highlight[] = [
     text: 'full text search',
     tooltip: (
       <>
-        Chef will use Convex’s built-in{' '}
+        Tevero will use Convex's built-in{' '}
         <TooltipLink href="https://docs.convex.dev/search/text-search">full text search</TooltipLink> capabilities.
       </>
     ),
@@ -83,7 +83,7 @@ const HIGHLIGHTS: Highlight[] = [
     text: 'presence',
     tooltip: (
       <>
-        Chef will use the <TooltipLink href="https://www.convex.dev/components/presence">Presence</TooltipLink>{' '}
+        Tevero will use the <TooltipLink href="https://www.convex.dev/components/presence">Presence</TooltipLink>{' '}
         Convex&nbsp;<TooltipLink href="https://www.convex.dev/components">component</TooltipLink>.
       </>
     ),
@@ -251,9 +251,20 @@ export const MessageInput = memo(function MessageInput({
   );
 
   return (
-    <div className="relative z-20 mx-auto w-full max-w-chat rounded-xl shadow transition-all duration-200">
-      <div className="rounded-xl bg-background-primary/75 backdrop-blur-md">
-        <div className="rounded-t-xl border transition-all has-[textarea:focus]:border-border-selected">
+    <div className="group/input relative z-20 mx-auto w-full max-w-chat">
+      {/* Glow effect container */}
+      <div
+        className={classNames(
+          'absolute -inset-1 rounded-2xl opacity-0 blur-2xl transition-opacity duration-500',
+          'bg-blue-500/10',
+          'group-focus-within/input:opacity-100',
+        )}
+        aria-hidden="true"
+      />
+
+      {/* Main input container */}
+      <div className="relative rounded-2xl bg-[var(--landing-card-glass)] shadow-xl ring-1 ring-white/10 backdrop-blur-xl transition-all duration-300 group-focus-within/input:ring-white/20">
+        <div className="rounded-t-2xl border-b border-white/5 transition-all has-[textarea:focus]:border-white/10">
           <TextareaWithHighlights
             onKeyDown={handleKeyDown}
             onChange={handleChange}
@@ -272,11 +283,7 @@ export const MessageInput = memo(function MessageInput({
             highlights={HIGHLIGHTS}
           />
         </div>
-        <div
-          className={classNames(
-            'flex items-center gap-2 border rounded-b-xl border-t-0 bg-background-secondary/80 p-1.5 text-sm flex-wrap',
-          )}
-        >
+        <div className={classNames('flex flex-wrap items-center gap-2 rounded-b-2xl bg-white/5 p-2 text-sm')}>
           {chefAuthState.kind === 'fullyLoggedIn' && (
             <ModelSelector modelSelection={modelSelection} setModelSelection={setModelSelection} size="sm" />
           )}
@@ -309,7 +316,7 @@ export const MessageInput = memo(function MessageInput({
               >
                 <div className="ml-3 flex items-center gap-1">
                   <h2 className="text-sm font-bold">Use a recipe</h2>
-                  <Tooltip tip="Recipes are Chef prompts that add powerful full-stack features to your app." side="top">
+                  <Tooltip tip="Recipes are Tevero prompts that add powerful full-stack features to your app." side="top">
                     <span className="cursor-help text-content-tertiary">
                       <InformationCircleIcon className="size-4" />
                     </span>
@@ -436,9 +443,9 @@ const TextareaWithHighlights = memo(function TextareaWithHighlights({
       <textarea
         ref={textareaRef}
         className={classNames(
-          'w-full px-3 py-3 outline-none resize-none text-content-primary placeholder-content-tertiary bg-transparent text-sm leading-snug',
+          'w-full resize-none bg-transparent px-4 py-3 text-sm leading-relaxed text-[var(--landing-text-primary)] outline-none placeholder-[var(--landing-text-muted)]',
           'transition-opacity',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'disabled:cursor-not-allowed disabled:opacity-50',
           'scrollbar-thin scrollbar-thumb-macosScrollbar-thumb scrollbar-track-transparent',
         )}
         disabled={disabled}
@@ -593,7 +600,7 @@ const NewLineShortcut = memo(function NewLineShortcut() {
 const CharacterWarning = memo(function CharacterWarning() {
   return (
     <Tooltip
-      tip="Chef performs better with shorter prompts. Consider making your prompt more concise or breaking it into smaller chunks."
+      tip="Tevero performs better with shorter prompts. Consider making your prompt more concise or breaking it into smaller chunks."
       side="bottom"
     >
       <div className="flex cursor-help items-center text-xs text-content-warning">

@@ -38,7 +38,7 @@ export async function loader() {
 export const links: LinksFunction = () => [
   {
     rel: 'icon',
-    href: '/favicon.svg',
+    href: '/favicon.svg?v=2',
     type: 'image/svg+xml',
   },
   { rel: 'stylesheet', href: globalStyles },
@@ -65,7 +65,7 @@ const inlineThemeCode = stripIndents`
     let theme = localStorage.getItem('bolt_theme');
 
     if (!theme) {
-      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      theme = 'dark';
     }
 
     document.querySelector('html')?.setAttribute('class', theme);

@@ -141,9 +141,7 @@ export const Chat = memo(
       maxCollapsedMessagesSize,
       maxRelevantFilesSize,
       minCollapsedMessagesSize,
-      useGeminiAuto,
       enableResend,
-      useAnthropicFraction,
     } = useLaunchDarkly();
 
     const title = useStore(description);
@@ -195,19 +193,21 @@ export const Chat = memo(
 
         // Map models to their respective providers
         const MODEL_TO_PROVIDER_MAP: {
-          [K in ModelSelection]: { providerName: ModelProvider; apiKeyField: 'value' | 'openai' | 'xai' | 'google' };
+          [K in ModelSelection]: {
+            providerName: ModelProvider;
+            apiKeyField: 'value' | 'openai' | 'xai' | 'google' | 'azure';
+          };
         } = {
-          auto: { providerName: 'anthropic', apiKeyField: 'value' },
-          'claude-4-sonnet': { providerName: 'anthropic', apiKeyField: 'value' },
-          'claude-4.5-sonnet': { providerName: 'anthropic', apiKeyField: 'value' },
-          'gpt-4.1': { providerName: 'openai', apiKeyField: 'openai' },
-          'gpt-5': { providerName: 'openai', apiKeyField: 'openai' },
-          'grok-3-mini': { providerName: 'xai', apiKeyField: 'xai' },
+          auto: { providerName: 'google', apiKeyField: 'google' },
+          'claude-sonnet-4.5-azure': { providerName: 'azure', apiKeyField: 'azure' },
+          'claude-opus-4.5-azure': { providerName: 'azure', apiKeyField: 'azure' },
+          'claude-haiku-4.5-azure': { providerName: 'azure', apiKeyField: 'azure' },
+          'deepseek-v3.2-azure': { providerName: 'azureopenai', apiKeyField: 'azure' },
+          'kimi-k2-azure': { providerName: 'azureopenai', apiKeyField: 'azure' },
           'gemini-2.5-pro': { providerName: 'google', apiKeyField: 'google' },
+          'gemini-2.5-flash': { providerName: 'google', apiKeyField: 'google' },
           'gemini-3-pro-preview': { providerName: 'google', apiKeyField: 'google' },
           'gemini-3-flash-preview': { providerName: 'google', apiKeyField: 'google' },
-          'claude-3-5-haiku': { providerName: 'anthropic', apiKeyField: 'value' },
-          'gpt-4.1-mini': { providerName: 'openai', apiKeyField: 'openai' },
         };
 
         // Get provider info for the current model
@@ -238,11 +238,8 @@ export const Chat = memo(
 
     const [sendMessageInProgress, setSendMessageInProgress] = useState(false);
 
-    const anthropicProviders: ProviderType[] =
-      Math.random() < useAnthropicFraction ? ['Anthropic', 'Bedrock'] : ['Bedrock', 'Anthropic'];
-
     const checkTokenUsage = useCallback(async () => {
-      if (hasApiKeySet(modelSelection, useGeminiAuto, apiKey)) {
+      if (hasApiKeySet(modelSelection, apiKey)) {
         setDisableChatMessage(null);
         return;
       }
@@ -278,7 +275,7 @@ export const Chat = memo(
       } catch (error) {
         captureException(error);
       }
-    }, [apiKey, convex, modelSelection, setDisableChatMessage, useGeminiAuto]);
+    }, [apiKey, convex, modelSelection, setDisableChatMessage]);
 
     const { messages, status, stop, append, setMessages, reload, error } = useChat({
       initialMessages,
@@ -299,37 +296,34 @@ export const Chat = memo(
         const retries = retryState.get();
         let modelChoice: string | undefined = undefined;
         if (modelSelection === 'auto') {
-          const providers: ProviderType[] = anthropicProviders;
-          modelProvider = providers[retries.numFailures % providers.length];
-          modelChoice = 'claude-sonnet-4-0';
-        } else if (modelSelection === 'claude-3-5-haiku') {
-          modelProvider = 'Anthropic';
-          modelChoice = 'claude-3-5-haiku-latest';
-        } else if (modelSelection === 'claude-4-sonnet') {
-          const providers: ProviderType[] = anthropicProviders;
-          modelProvider = providers[retries.numFailures % providers.length];
-          modelChoice = 'claude-sonnet-4-0';
-        } else if (modelSelection === 'claude-4.5-sonnet') {
-          modelProvider = 'Anthropic';
+          modelProvider = 'Google';
+          modelChoice = 'gemini-3-pro-preview';
+        } else if (modelSelection === 'claude-sonnet-4.5-azure') {
+          modelProvider = 'Azure';
           modelChoice = 'claude-sonnet-4-5';
-        } else if (modelSelection === 'grok-3-mini') {
-          modelProvider = 'XAI';
+        } else if (modelSelection === 'claude-opus-4.5-azure') {
+          modelProvider = 'Azure';
+          modelChoice = 'claude-opus-4-5';
+        } else if (modelSelection === 'claude-haiku-4.5-azure') {
+          modelProvider = 'Azure';
+          modelChoice = 'claude-haiku-4-5';
+        } else if (modelSelection === 'deepseek-v3.2-azure') {
+          modelProvider = 'AzureOpenAI';
+          modelChoice = 'DeepSeek-V3.2';
+        } else if (modelSelection === 'kimi-k2-azure') {
+          modelProvider = 'AzureOpenAI';
+          modelChoice = 'Kimi-K2-Thinking';
         } else if (modelSelection === 'gemini-2.5-pro') {
           modelProvider = 'Google';
+        } else if (modelSelection === 'gemini-2.5-flash') {
+          modelProvider = 'Google';
+          modelChoice = 'gemini-2.5-flash';
         } else if (modelSelection === 'gemini-3-pro-preview') {
           modelProvider = 'Google';
           modelChoice = 'gemini-3-pro-preview';
         } else if (modelSelection === 'gemini-3-flash-preview') {
           modelProvider = 'Google';
           modelChoice = 'gemini-3-flash-preview';
-        } else if (modelSelection === 'gpt-4.1-mini') {
-          modelProvider = 'OpenAI';
-          modelChoice = 'gpt-4.1-mini';
-        } else if (modelSelection === 'gpt-4.1') {
-          modelProvider = 'OpenAI';
-        } else if (modelSelection === 'gpt-5') {
-          modelProvider = 'OpenAI';
-          modelChoice = 'gpt-5';
         } else {
           const _exhaustiveCheck: never = modelSelection;
           throw new Error(`Unknown model: ${_exhaustiveCheck}`);
@@ -482,11 +476,8 @@ export const Chat = memo(
     const sendMessage = async (messageInput: string) => {
       const now = Date.now();
       const retries = retryState.get();
-      if (
-        (retries.numFailures >= MAX_RETRIES || now < retries.nextRetry) &&
-        !hasApiKeySet(modelSelection, useGeminiAuto, apiKey)
-      ) {
-        let message: string | ReactNode = 'Chef is too busy cooking right now. ';
+      if ((retries.numFailures >= MAX_RETRIES || now < retries.nextRetry) && !hasApiKeySet(modelSelection, apiKey)) {
+        let message: string | ReactNode = 'Tevero is too busy right now. ';
         if (retries.numFailures >= MAX_RETRIES) {
           message = (
             <>
@@ -592,7 +583,7 @@ export const Chat = memo(
         setModelSelection(newModel);
 
         // First check if we have a key for this model, which is the most important case
-        if (hasApiKeySet(newModel, useGeminiAuto, apiKey)) {
+        if (hasApiKeySet(newModel, apiKey)) {
           // If we have a key for this model, clear the message and exit early
           setDisableChatMessage(null);
           return;
@@ -610,7 +601,7 @@ export const Chat = memo(
           });
         }
       },
-      [apiKey, checkApiKeyForCurrentModel, checkTokenUsage, setModelSelection, useGeminiAuto],
+      [apiKey, checkApiKeyForCurrentModel, checkTokenUsage, setModelSelection],
     );
 
     return (
@@ -759,29 +750,31 @@ export function NoTokensText({ resetDisableChatMessage }: { resetDisableChatMess
         >
           Upgrade to a paid plan
         </Button>
+        {/* Referral section commented out
         {referralCode && referralStats?.left !== 0 && (
           <div className="w-full space-y-2">
             <p className="text-sm text-content-secondary">
-              Refer a friend and Get 85,000 free Chef tokens for each
+              Refer a friend and Get 85,000 free tokens for each
               {referralStats?.left === 5 || !referralStats ? ' (limit 5)' : ` (${referralStats.left} / 5)`}
             </p>
             <div className="flex items-center gap-2">
               <input
                 type="text"
                 readOnly
-                value={`https://convex.dev/try-chef/${referralCode}`}
+                value={`referralLink`}
                 className="flex-1 rounded-md border bg-bolt-elements-background-depth-2 px-3 py-1.5 text-sm text-content-primary"
               />
               <Button
                 variant="neutral"
                 size="xs"
-                onClick={() => copyToClipboard(`https://convex.dev/try-chef/${referralCode}`)}
+                onClick={() => copyToClipboard(`referralLink`)}
                 tip="Copy link"
                 icon={<ClipboardIcon />}
               />
             </div>
           </div>
         )}
+        */}
       </div>
     </div>
   );

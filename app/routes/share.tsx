@@ -19,7 +19,7 @@ import { ErrorDisplay } from '~/components/ErrorComponent';
 export const links: LinksFunction = () => [
   {
     rel: 'icon',
-    href: '/favicon.svg',
+    href: '/favicon.svg?v=2',
     type: 'image/svg+xml',
   },
   { rel: 'stylesheet', href: globalStyles },
